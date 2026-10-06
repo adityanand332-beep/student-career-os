@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="sectionhead">
+  <div>
+    <p class="eyebrow">PROFILE</p>
+    <h1>Your profile</h1>
+  </div>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h2>Profile photo</h2>
+    <div class="avatar-wrap">
+      {% if user and user.avatar %}
+        <img class="avatar" src="{{ url_for('main.uploaded_file', filename=user.avatar) }}" alt="avatar">
+      {% else %}
+        <div class="avatar-placeholder">{{ (user.name or 'U')[:1].upper() }}</div>
+      {% endif %}
+    </div>
+    <form method="post" enctype="multipart/form-data" class="stack">
+      <label>
+        Upload photo
+        <input type="file" name="avatar" accept=".png,.jpg,.jpeg,.webp">
+      </label>
+      <button>Save photo</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Basic details</h2>
+    <form method="post" class="stack">
+      <label>
+        Full name
+        <input name="name" value="{{ user.name if user else '' }}" required>
+      </label>
+      <button>Update profile</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

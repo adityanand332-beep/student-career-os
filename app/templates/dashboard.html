@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class=hero>
+  <div>
+    <p class=eyebrow>CAREER COMMAND CENTER</p>
+    <h1>Hi {{session.name}} 👋</h1>
+    <p>Here is your current career readiness snapshot.</p>
+  </div>
+  <div class=score>
+    <b>{{readiness}}%</b>
+    <small>Job readiness</small>
+  </div>
+</div>
+
+<div class=grid stats>
+  <div class=card><small>Skills</small><h2>{{skills|length}}</h2><a href=/skills>Update →</a></div>
+  <div class=card><small>Projects</small><h2>{{projects|length}}</h2><a href=/projects>Manage →</a></div>
+  <div class=card><small>Certificates</small><h2>{{certs|length}}</h2><a href=/certificates>Manage →</a></div>
+  <div class=card><small>Top career</small><h2>{{matches[0].score if matches else 0}}%</h2><a href=/careers>Explore →</a></div>
+</div>
+
+<section class="card" style="margin-top: 20px;">
+  <div class="sectionhead">
+    <h2>Skill strength</h2>
+  </div>
+  {% if chart_labels %}
+    <div style="max-width: 820px; margin: 8px auto 0;">
+      <canvas id="skillsChart" height="170"></canvas>
+    </div>
+  {% else %}
+    <p class="muted">Start rating your skills to build a skill chart.</p>
+  {% endif %}
+</section>
+
+<section class="card" style="margin-top: 20px;">
+  <div class="sectionhead">
+    <h2>Upcoming goals</h2>
+    <a href="/goals">Manage</a>
+  </div>
+  {% if goals %}
+    <div class="stack">
+      {% for g in goals[:3] %}
+      <div class="row">
+        <div>
+          <strong>{{ g.title }}</strong>
+          <div class="muted">{{ g.status|replace('_', ' ')|title }}{% if g.target_date %} • {{ g.target_date }}{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">No goals set yet. Create one to track your next milestone.</p>
+  {% endif %}
+</section>
+
+<section>
+  <div class=sectionhead><h2>Career matches</h2><a href=/careers>See all</a></div>
+  <div class=grid>
+    {% for m in matches %}
+    <a class='card career' href='/career/{{m.career}}'>
+      <div>
+        <h3>{{m.career}}</h3>
+        <p>{{m.got|length}} matched · {{m.missing|length}} gaps</p>
+      </div>
+      <strong>{{m.score}}%</strong>
+      <div class=bar><i style='width:{{m.score}}%'></i></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const skillLabels = {{ chart_labels | tojson }};
+  const skillValues = {{ chart_values | tojson }};
+  if (skillLabels.length && document.getElementById('skillsChart')) {
+    new Chart(document.getElementById('skillsChart'), {
+      type: 'bar',
+      data: {
+        labels: skillLabels,
+        datasets: [{
+          label: 'Skill level',
+          data: skillValues,
+          backgroundColor: ['#4f46e5','#7c3aed','#0ea5e9','#10b981','#f59e0b','#ec4899','#14b8a6','#64748b'],
+          borderRadius: 10,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 5,
+            ticks: { stepSize: 1 }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}

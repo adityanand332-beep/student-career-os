@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="sectionhead">
+  <div>
+    <p class="eyebrow">ADMIN</p>
+    <h1>System overview</h1>
+  </div>
+</div>
+
+<div class="grid stats">
+  <div class="card">
+    <small>Total users</small>
+    <h2>{{ total_users }}</h2>
+  </div>
+  <div class="card">
+    <small>Verified users</small>
+    <h2>{{ verified_users }}</h2>
+  </div>
+  <div class="card">
+    <small>Projects</small>
+    <h2>{{ active_jobs }}</h2>
+  </div>
+  <div class="card">
+    <small>Skill catalog</small>
+    <h2>{{ total_skills }}</h2>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 22px;">
+  <h2>SMTP status</h2>
+  <div class="row" style="margin-bottom: 14px;">
+    <div>
+      <strong>{{ 'Configured' if smtp_ready else 'Not configured' }}</strong>
+      <div class="muted">{{ 'Mail server is active and ready to send messages.' if smtp_ready else 'Set MAIL_SERVER and MAIL credentials in .env to enable production email delivery.' }}</div>
+    </div>
+  </div>
+  <form method="post" action="/admin/test-email">
+    <div class="formgrid" style="grid-template-columns: 1.5fr auto; align-items: end;">
+      <label>
+        Test recipient
+        <input type="email" name="email" placeholder="admin@yourdomain.com" value="{{ session.get('email') or '' }}">
+      </label>
+      <button class="secondary" type="submit">Send test email</button>
+    </div>
+  </form>
+</div>
+
+<div class="card" style="margin-top: 22px;">
+  <h2>Recent users</h2>
+  <div class="stack">
+    {% for u in recent_users %}
+    <div class="row">
+      <div>
+        <strong>{{ u.name }}</strong>
+        <div class="muted">{{ u.email }} • {{ u.created_at }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.vscode/
+data/*.db
+app/static/uploads/*
+!app/static/uploads/.gitkeep

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth">
+  <div>
+    <p class="eyebrow">VERIFY</p>
+    <h1>Email verification</h1>
+    <p>Check your inbox and confirm your account before logging in.</p>
+  </div>
+  <form method="post" class="card">
+    <h2>Resend verification</h2>
+    <label>Email
+      <input type="email" name="email" required>
+    </label>
+    <button>Send verification link</button>
+    <p><a href="/login">Back to login</a></p>
+  </form>
+</div>
+{% endblock %}

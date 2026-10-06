@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="sectionhead">
+  <div>
+    <p class="eyebrow">ROADMAP</p>
+    <h1>Career goals</h1>
+  </div>
+</div>
+
+<form method="post" class="card formgrid">
+  <input name="title" placeholder="Goal title" required>
+  <input name="target_date" type="date" placeholder="Target date">
+  <select name="status">
+    <option value="active">Active</option>
+    <option value="in_progress">In progress</option>
+    <option value="completed">Completed</option>
+  </select>
+  <button>Add goal</button>
+</form>
+
+<div class="stack">
+  {% for g in goals %}
+  <div class="card row">
+    <div>
+      <h3>{{ g.title }}</h3>
+      <p>{{ g.status|replace('_', ' ')|title }}{% if g.target_date %} • {{ g.target_date }}{% endif %}</p>
+    </div>
+    <form method="post" action="{{ url_for('main.delete_goal', goal_id=g.id) }}">
+      <button class="danger">Delete</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="card">No goals yet. Set your next milestone.</div>
+  {% endfor %}
+</div>
+{% endblock %}
